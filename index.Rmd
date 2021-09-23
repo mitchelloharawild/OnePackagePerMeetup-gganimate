@@ -16,6 +16,8 @@ output:
       beforeInit: ["./libs/jquery/jquery.min.js", "./libs/slides.js"]
 ---
 class: inverse
+background-image: linear-gradient(to bottom, rgba(50, 50, 50, .8), rgba(50, 50, 50, .5)), url("resources/dan-gold-7zrsuhRdUNQ-unsplash.jpg")
+background-size: cover
 
 ```{css, echo=FALSE}
 /* custom.css */
@@ -40,7 +42,7 @@ options(htmltools.dir.version = FALSE, width = 120)
 library(tidyverse)
 library(knitr)
 library(kableExtra)
-library(fontawesome) #devtools::install_github("rstudio/fontawesome")
+library(icons) # remotes::install_github("mitchelloharawild/icons")
 library(lubridate)
 library(htmltools)
 library(datasauRus)
@@ -52,7 +54,7 @@ opts_chunk$set(
   echo = FALSE, warning = FALSE, message = FALSE, comment = "#>",
   fig.path = 'figure/', cache.path = 'cache/', fig.align = 'center',
   fig.width = 12, fig.height = 4, fig.show = 'hold',
-  cache = FALSE, external = TRUE, dev = 'png', dev.args = list(bg = "transparent")
+  external = TRUE, dev = 'png', dev.args = list(bg = "transparent")
 )
 
 mp4_vid <- function(src){
@@ -97,92 +99,340 @@ theme_set(
 ```
 
 .title[gganimate]
-.sticker-float[![gganimate](resources/gganimate.png)]
-
-## OnePackagePerMeetup - Tunis R User Group
-
-.bottom[
-### Mitchell O'Hara-Wild (`r fa("twitter", fill="#1da1f2")`[@mitchoharawild](https://twitter.com/mitchoharawild))
-
-### 23 September 2021
-### Slides @ [slides.mitchelloharawild.com/OnePackagePerMeetup-gganimate](https://slides.mitchelloharawild.com/OnePackagePerMeetup-gganimate)
-]
-
----
-class: inverse
-
----
-class: inverse
-
-.animated.rubberBand.title[gganimate]
-.sticker-float[![gganimate](resources/gganimate.png)]
-
----
-class: inverse
-
-.title[gganimate]
-.sticker-float[![gganimate](resources/gganimate.png)]
-
-.animated.rubberBand[
-.desc[OnePackagePerMeetup - Tunis R User Group]
-]
-
----
-class: inverse
-
-.title[gganimate]
-.sticker-float[![gganimate](resources/gganimate.png)]
-
-.desc[OnePackagePerMeetup - Tunis R User Group]
+.sticker-float[![gganimate](resources/gganimate.png)].sticker-float[![Tunis RUG Hex](resources/tunis-rug.png)]
+### Animating ggplot2’s grammar of graphics
+<br>
+### OnePackagePerMeetup 
+### Tunis R User Group
 
 .bottom[
-.animated.zoomInDown[
-### Mitchell O'Hara-Wild (`r fa("twitter", fill="#1da1f2")`[@mitchoharawild](https://twitter.com/mitchoharawild))
+### Mitchell O'Hara-Wild (`r icon_style(fontawesome$brands$twitter, fill = "#1da1f2")`[@mitchoharawild](https://twitter.com/mitchoharawild))
 
-### &nbsp;
-### &nbsp;
-]
+#### `r icon_style(fontawesome$solid$desktop, fill = "white")` [slides.mitchelloharawild.com/OnePackagePerMeetup-gganimate](https://slides.mitchelloharawild.com/OnePackagePerMeetup-gganimate)
 ]
 
 ---
-class: inverse
+background-image: url("resources/hexwall.jpg")
+background-size: cover
 
-.title[gganimate]
+---
+class: animated fadeIn half-side
+background-image: linear-gradient(to bottom, rgba(50, 50, 50, .3), rgba(50, 50, 50, .4)), url("resources/hexwall.jpg")
+background-size: cover
+
+.pull-right.bg-blond[
+## Hi, I'm Mitch!
+
+[`r fontawesome$brands$twitter` @mitchoharawild](https://twitter.com/mitchoharawild) | [`r fontawesome$brands$github` @mitchelloharawild](https://github.com/mitchelloharawild)
+
+<hr>
+
+🌏 From Melbourne, Australia (🕓)
+
+🎓 Teaches R data skills at [Monash University](https://www.monash.edu/)
+
+📊 Data science consultant at [Nectric](https://nectric.com.au/)
+
+📈 Specialised in time series analysis
+
+📦 R package developer (fable, vitae, icons, ...)
+
+🌱 Permaculture nerd (🐝🐔🍄🥬)
+]
+
+
+---
+background-image:url("resources/participants_hex.png")
+background-size: cover
+
+```{r attendees, cache = TRUE, include=FALSE}
+# Get attendees
+attendees <- jsonlite::read_json(
+  "https://www.meetup.com/mu_api/urlname/events/eventId/attendees?queries=(endpoint:tunis-r-user-group/events/280855963/rsvps,params:(only:%27member%27,order:time),ref:eventAttendees_tunis-r-user-group_280855963,type:attendees)"
+)
+
+# Download attendee images
+attendees_df <- map_dfr(attendees$responses[[1]]$value, ~ tibble(name = .$member$name, photo = .$member$photo$highres_link, role = .$member$role)) %>% 
+  filter(!is.na(photo))
+xfun::dir_create("resources/attendees/hex")
+missing_images <- attendees_df$photo[!file.exists(file.path("resources/attendees", basename(attendees_df$photo)))]
+if(!is_empty(missing_images)) download.file(missing_images, destfile = file.path("resources/attendees", basename(missing_images)))
+
+# Convert to hex
+sys_glue <- function(x) system(glue::glue(x, .envir = parent.frame()))
+map(
+  file.path("resources/attendees", basename(missing_images)),
+  function(img) {
+    img2 <- file.path(dirname(img), "hex", xfun::with_ext(basename(img), "png"))
+    sys_glue("convert {img} -gravity center -crop 121:140 {img2}")
+    sys_glue("convert {img2} -resize 121x140\\! {img2}")
+    sys_glue("convert {img2} resources/attendees/hex-mask.png -alpha Off -compose CopyOpacity -composite {img2}")
+  }
+)
+
+# Make a hexwall
+source("~/github/hexwall//hexwall.R")
+magick::image_write(
+  hexwall("resources/attendees/hex/", sticker_row_size = 10, sticker_width = 121, remove_small = FALSE, n_stickers = 66, sort_mode = "random") %>% 
+    image_crop(geometry = "1089x699+60.5+35.15"),
+  "resources/participants_hex.png"
+)
+```
+
+
+---
+class: animated fadeIn half-side
+background-image: linear-gradient(to bottom, rgba(50, 50, 50, .3), rgba(50, 50, 50, .4)), url("resources/participants_hex.png")
+background-size: cover
+
+.pull-left.bg-blond[
+## Who `r fontawesome$brands$"r-project"` you?
+
+Experience with R?
+
+Experience with tidyverse?
+
+Experience with ggplot2?
+
+Experience with gganimate?
+]
+---
+class: bg-blond
+
+# 🎯 Today's workshop goals
+
+.box-12[
+1. Discuss **why** animated plots can be useful
+1. Learn **how** to animate ggplot2 with gganimate
+1. See gganimate in **action** - recreating famous animations
+1. **Try gganimate** on your own plots
+]
+
+--
+
+# 💬 Please join in discussions!
+
+.box-12[
+🙋 There's plenty of time, so please ask questions.
+
+🎙️ Feel free to unmute to discuss, or simply type into the chat.
+
+📊 Fill out the polls!
+]
+
+
+---
+background-image: linear-gradient(to bottom, rgba(50, 50, 50, .8), rgba(50, 50, 50, .5)), url("resources/s2-art-PiVZRb3kS6g-unsplash.jpg")
+background-size: cover
+
+.box-12.center.bg-blond[
+# 💃 Making plots move 🕺
+
+## Static, animated, and interactive plots.
+]
+
+---
+
+## 📈 Examples from my time series work
+
+--
+
+### Static
+
+```{r ts-static, echo = FALSE, fig.height = 6}
+tsibbledata::vic_elec %>% 
+  ggplot(aes(x = Time, y = Demand)) + 
+  geom_line() + 
+  labs(title = "Half-hourly electricity demand", subtitle = "Victoria, Australia (2012-2014)")
+```
+
+---
+
+## 📈 Examples from my time series work
+
+### Static
+
+```{r ts-static-zoom, echo = FALSE, fig.height = 6}
+tsibbledata::vic_elec %>% 
+  filter(yearmonth(Time) == yearmonth("2013 July")) %>% 
+  ggplot(aes(x = Time, y = Demand)) + 
+  geom_line() + 
+  labs(title = "Half-hourly electricity demand", subtitle = "Victoria, Australia (July 2013)")
+```
+
+---
+
+## 📈 Examples from my time series work
+
+### Animated
+
+```{r ts-animated, eval = FALSE, echo = FALSE, message = FALSE}
+p <- tsibbledata::vic_elec %>% 
+  ggplot(aes(x = Time, y = Demand)) + 
+  geom_line() + 
+  labs(title = "Half-hourly electricity demand", subtitle = "Victoria, Australia") +
+  transition_states(State, wrap = FALSE) + 
+  view_step_manual(1,10,
+                   c(ymd_hms("2012-01-01 00:00:00"), ymd_hms("2013-7-01 00:00:00")),
+                   c(ymd_hms("2014-12-31 23:59:59"), ymd_hms("2013-7-30 23:59:59")),
+                   c(2857.946, 3034.097),
+                   c(9345.004,  6543.203),
+                   wrap = FALSE)
+
+anim_save("resources/ts-zoom.mp4", p, renderer = ffmpeg_renderer(options = list(pix_fmt = "yuv420p")),
+          width = 900, height = 500)
+```
+```{r}
+mp4_vid("resources/ts-start.mp4")
+```
+
+---
+
+## 📈 Examples from my time series work
+
+### Animated
+
+```{r}
+mp4_vid("resources/ts-zoom.mp4")
+```
+
+---
+
+## 📈 Examples from my time series work
+
+### Interactive
+
+```{r ts-interactive, echo = FALSE, eval = FALSE}
+p <- tsibbledata::vic_elec %>%  %>% 
+  ggplot(aes(x = Time, y = Demand)) + 
+  geom_line() + 
+  labs(title = "Half-hourly electricity demand", subtitle = "Victoria, Australia") 
+htmlwidgets::saveWidget(ggplotly(p), "~/github/gganimate-workshop/resources/electricity_plotly.html")
+```
+
+<iframe src="resources/electricity_plotly.html" style="width: 900px; height: 500px; border: 0"></iframe> 
+
+---
+
+## 📈 Examples from my time series work
+
+### Static
+
+```{r bc-static, fig.height = 6}
+tsibbledata::aus_retail %>% 
+  filter(Industry == "Food retailing") %>% 
+  summarise(Turnover = sum(Turnover)) %>% 
+  mutate(`Box-Cox (lambda = 0.5)` = fabletools::box_cox(Turnover, 0.5), log(Turnover)) %>% 
+  gather(Transformation, Value, factor_key = TRUE) %>% 
+  ggplot(aes(x = Month, y = Value)) + 
+  geom_line() + 
+  facet_wrap(vars(Transformation), ncol = 3, scales = "free_y")
+```
+
+---
+
+## 📈 Examples from my time series work
+
+### Animated
+
+```{r bc-anim, fig.height = 6, cache = TRUE}
+library(rlang)
+food_bc <- tsibbledata::aus_retail %>% 
+  filter(Industry == "Food retailing") %>% 
+  summarise(Turnover = sum(Turnover)) %>% 
+  mutate(!!!set_names(map(seq(0,1,0.01), ~ expr(fabletools::box_cox(Turnover, !!.x))), seq(0,1,0.01))) %>% 
+  gather(lambda, Turnover) %>% 
+  mutate(lambda = as.numeric(lambda))
+
+p <- food_bc %>% 
+  ggplot(aes(x = Month, y = Turnover)) + 
+  geom_line() + 
+  transition_states(1 - lambda, state_length = 0) + 
+  view_follow() + 
+  ggtitle("Box-Cox transformed food retailing turnover (lambda = {format(1 - as.numeric(closest_state), digits = 2)})")
+animate(p, width = 900, height = 500, start_pause = 5, end_pause = 5, nframes = 110)
+```
+
+---
+
+## 📈 Examples from my time series work
+
+### Interactive
+
+<iframe src="https://ebsmonash.shinyapps.io/gganimateBoxCox/?showcase=0" data-external="1" style="width: 900px; height: 500px; border: 0"></iframe>
+
+---
+
+## 📈 Examples from the web
+
+.center.box-12[
+[
+![Subreddit 'Data is Beautiful'](resources/dataisbeautiful.png)
+https://www.reddit.com/r/dataisbeautiful/top/?t=all
+](https://www.reddit.com/r/dataisbeautiful/top/?t=all)
+]
+---
+
+## Why should I animate?
+
+<hr>
+
+### Allows simple graphics to show changes over time.
+
+<br>
+
+--
+
+### You can show more detailed intermediate steps.
+
+<br>
+
+--
+
+### Guided exploration of data - great for talks.
+
+<br>
+
+--
+
+.animated.bounceIn[
+### Attention grabbing. 
+#### (Tired students? Zzz...)
+]
+
+---
+
+## 🚧 Caution: it's easy for animation to make a good plot worse!
+
+<hr>
+
+### Pace: speed of animation
+
+Quick animations may be hard to follow.
+Slow animations are boring and tedious.
+
+--
+
+### Perplexity: overwhelming information
+
+It is easy for animations to be overwhelming and confusing.
+Multiple simple animations can be easier to digest.
+
+--
+
+### Purpose: Usefulness of using animation
+
+Is animation needed? Does it provide additional value?
+
+
+---
+class: inverse, center, middle
+
 .sticker-float[![gganimate](resources/gganimate.png)]
 
-.desc[The grammar of animation]
+.title[Your turn]
 
-.bottom[
-### Mitchell O'Hara-Wild (`r fa("twitter", fill="#1da1f2")`[@mitchoharawild](https://twitter.com/mitchoharawild))
-### Ursula Laa (`r fa("twitter", fill="#1da1f2")`[@UschiLaa](https://twitter.com/UschiLaa/))
-### Nicholas Spyrison (`r fa("twitter", fill="#1da1f2")`[@nspyrison](https://twitter.com/nspyrison/))
-
-
-.animated.bounceInRight[
-### 22 March 2019
-### Slides @ [mitchelloharawild.com/wombat-gganimate](https://mitchelloharawild.com/wombat-gganimate)
-]
-]
-
----
-class: inverse
-
-.animated.hinge.title[gganimate]
-.animated.hinge.sticker-float[![gganimate](resources/gganimate.png)]
-
-.animated.hinge[
-.desc[The grammar of animation]
-]
-
-.animated.hinge.bottom[
-### Mitchell O'Hara-Wild (`r fa("twitter", fill="#1da1f2")`[@mitchoharawild](https://twitter.com/mitchoharawild))
-### Ursula Laa (`r fa("twitter", fill="#1da1f2")`[@UschiLaa](https://twitter.com/UschiLaa/))
-### Nicholas Spyrison (`r fa("twitter", fill="#1da1f2")`[@nspyrison](https://twitter.com/nspyrison/))
-
-### 22 March 2019
-### Slides @ [mitchelloharawild.com/wombat-gganimate](https://mitchelloharawild.com/wombat-gganimate)
-]
-]
+# Think about why you want to animate?
 
 ---
 
@@ -224,203 +474,6 @@ Reimagined between 2017 and 2018.
 
 Re-built completely to support a grammar of animation with smooth transitions.
 ]
-
-
----
-class: center
-
-
-## Why should I animate?
-
-<hr>
-
-### Improves graphical re-orientation in time and space.
-
-<br>
-
---
-
-### More compact delivery of information.
-
-<br>
-
---
-
-### Allows for guided exploration of data, great for talks.
-
-<br>
-
---
-
-.animated.bounceIn[
-### Attention grabbing. 
-#### (Tired students? Zzz...)
-]
-
----
-
-## Considerations in making effective animations
-
-<hr>
-
-### Pace: speed of animation
-
-Quick animations may be hard to follow.
-Slow animations are boring and tedious.
-
---
-
-### Perplex: amount of information
-
-It is easy for animations to be overwhelming and confusing.
-Multiple simple animations can be easier to digest.
-
---
-
-### Purpose: Usefulness of using animation
-
-Is animation needed? Does it provide additional value?
-
----
-
-## Usefulness of animation
-
-### Static
-
-```{r ts-static, echo = FALSE, fig.height = 6}
-tsibbledata::vic_elec %>% 
-  ggplot(aes(x = Time, y = Demand)) + 
-  geom_line() + 
-  labs(title = "Half-hourly electricity demand", subtitle = "Victoria, Australia (2012-2014)")
-```
-
----
-
-## Usefulness of animation
-
-### Static
-
-```{r ts-static-zoom, echo = FALSE, fig.height = 6}
-tsibbledata::vic_elec %>% 
-  filter(yearmonth(Time) == yearmonth("2014 June")) %>% 
-  ggplot(aes(x = Time, y = Demand)) + 
-  geom_line() + 
-  labs(title = "Half-hourly electricity demand", subtitle = "Victoria, Australia (June 2014)")
-```
-
----
-
-## Usefulness of animation
-
-### Animated
-
-```{r ts-animated, eval = FALSE, echo = FALSE, message = FALSE}
-p <- tsibbledata::vic_elec %>% 
-  ggplot(aes(x = Time, y = Demand)) + 
-  geom_line() + 
-  labs(title = "Half-hourly electricity demand", subtitle = "Victoria, Australia") +
-  transition_states(State, wrap = FALSE) + 
-  view_step_manual(1,10,
-                   c(ymd_hms("2012-01-01 00:00:00"), ymd_hms("2013-7-01 00:00:00")),
-                   c(ymd_hms("2014-12-31 23:59:59"), ymd_hms("2013-7-30 23:59:59")),
-                   c(2857.946, 3034.097),
-                   c(9345.004,  6543.203),
-                   wrap = FALSE)
-
-anim_save("resources/ts-zoom.mp4", p, renderer = ffmpeg_renderer(options = list(pix_fmt = "yuv420p")),
-          width = 900, height = 500)
-```
-```{r}
-mp4_vid("resources/ts-start.mp4")
-```
-
----
-
-## Usefulness of animation
-
-### Animated
-
-```{r}
-mp4_vid("resources/ts-zoom.mp4")
-```
-
----
-
-## Usefulness of animation
-
-### Interactive
-
-```{r ts-interactive, echo = FALSE, eval = FALSE}
-p <- tsibbledata::vic_elec %>%  %>% 
-  ggplot(aes(x = Time, y = Demand)) + 
-  geom_line() + 
-  labs(title = "Half-hourly electricity demand", subtitle = "Victoria, Australia") 
-htmlwidgets::saveWidget(ggplotly(p), "~/github/gganimate-workshop/resources/electricity_plotly.html")
-```
-
-<iframe src="resources/electricity_plotly.html" width = "1000px", height = "400px" seamless="seamless" frameBorder="0"></iframe> 
-
-
----
-
-## Usefulness of animation
-
-### Static
-
-```{r bc-static, fig.height = 6}
-tsibbledata::aus_retail %>% 
-  filter(Industry == "Food retailing") %>% 
-  summarise(Turnover = sum(Turnover)) %>% 
-  mutate(`Box-Cox (lambda = 0.5)` = fabletools::box_cox(Turnover, 0.5), log(Turnover)) %>% 
-  gather(Transformation, Value, factor_key = TRUE) %>% 
-  ggplot(aes(x = Month, y = Value)) + 
-  geom_line() + 
-  facet_wrap(vars(Transformation), ncol = 3, scales = "free_y")
-```
-
----
-
-## Usefulness of animation
-
-### Animated
-
-```{r bc-anim, fig.height = 6}
-library(rlang)
-food_bc <- tsibbledata::aus_retail %>% 
-  filter(Industry == "Food retailing") %>% 
-  summarise(Turnover = sum(Turnover)) %>% 
-  mutate(!!!set_names(map(seq(0,1,0.01), ~ expr(fabletools::box_cox(Turnover, !!.x))), seq(0,1,0.01))) %>% 
-  gather(lambda, Turnover) %>% 
-  mutate(lambda = as.numeric(lambda))
-
-p <- food_bc %>% 
-  ggplot(aes(x = Month, y = Turnover)) + 
-  geom_line() + 
-  transition_states(1 - lambda, state_length = 0) + 
-  view_follow() + 
-  ggtitle("Box-Cox transformed food retailing turnover (lambda = {format(1 - as.numeric(closest_state), digits = 2)})")
-animate(p, width = 900, height = 500, start_pause = 5, end_pause = 5, nframes = 110)
-```
-
----
-
-## Usefulness of animation
-
-### Interactive
-
-```{r BoxCoxShiny, echo=FALSE}
-knitr::include_app("https://ebsmonash.shinyapps.io/gganimateBoxCox/",
-  height = "650px")
-```
-
----
-class: inverse, center, middle
-
-.sticker-float[![gganimate](resources/gganimate.png)]
-
-.title[Your turn]
-
-# Think how you can use animations
 
 ---
 ## The basis - ggplot2
@@ -498,26 +551,12 @@ ggplot(economics) +
 ```{r output2, ref.label="plot2", echo=FALSE, cache=TRUE, fig.height = 8}
 ```
 ]
----
-## A simple example
-### Using the economics dataset
-Now we can add a graphical primitive, let's try a scatter plot
 
-.left-code[
-```{r plot3, eval=FALSE, echo=TRUE}
-ggplot(economics) +
-  aes(date, unemploy) +
-  geom_point() #<<
-```
-]
-.right-plot[
-```{r output3, ref.label="plot3", echo=FALSE, cache=TRUE, fig.height = 8}
-```
-]
 ---
 ## A simple example
 ### Using the economics dataset
-Actually a line graph is better suited in this case
+
+Add the line geometry to make a time series plot
 
 .left-code[
 ```{r plot4, eval=FALSE, echo=TRUE}
@@ -534,10 +573,11 @@ ggplot(economics) +
 ---
 ## A simple example
 ### Using the economics dataset
-Just one extra line turns this into an animation!
+Add a transition to reveal an animation!
 
 .left-code[
 ```{r plot5-anim, eval=FALSE, echo=TRUE}
+library(gganimate) #<<
 ggplot(economics) +
   aes(date, unemploy) +
   geom_line() +
@@ -548,8 +588,19 @@ ggplot(economics) +
 ```{r output5-anim, ref.label="plot5-anim", echo=FALSE, cache=TRUE, fig.height = 8}
 ```
 ]
+
+--
+.left-code[
+Is this a good use of animation?
+]
+
+--
+.left-code[
+How can it be improved?
+]
+
 ---
-## A not-so-simple example, the datasaurus dozen
+## The datasaurus dozen
 Again, we first pass in the dataset to ggplot
 
 .left-code[
@@ -562,7 +613,7 @@ ggplot(datasaurus_dozen)#<<
 ```
 ]
 ---
-## A not-so-simple example, the datasaurus dozen
+## The datasaurus dozen
 For each dataset we have x and y values, in addition we can map dataset to color
 
 .left-code[
@@ -576,27 +627,13 @@ ggplot(datasaurus_dozen) +
 ```
 ]
 ---
-## A not-so-simple example, the datasaurus dozen
-Trying a simple scatter plot first, but there is too much information
-.left-code[
-```{r plot7, eval=FALSE, echo=TRUE}
-ggplot(datasaurus_dozen) +
-  aes(x, y, color=dataset) +
-  geom_point() #<<
-```
-]
-.right-plot[
-```{r output7, ref.label="plot7", echo=FALSE, cache=TRUE, fig.height = 10}
-```
-]
----
-## A not-so-simple example, the datasaurus dozen
+## The datasaurus dozen
 We can use facets to split up by dataset, revealing the different distributions
 .left-code[
 ```{r plot8, eval=FALSE, echo=TRUE}
 ggplot(datasaurus_dozen) +
   aes(x, y, color=dataset) +
-  geom_point() +
+  geom_point() +#<<
   facet_wrap(~dataset)#<<
 ```
 ]
@@ -671,7 +708,7 @@ tribble(
 Which transition was used in the following animations?
 
 .pull-left[
-```{r transition-layers}
+```{r transition-layers, cache = TRUE}
 ggplot(mtcars, aes(mpg, disp)) +
   geom_point() +
   geom_smooth(colour = 'grey', se = FALSE) +
@@ -777,7 +814,7 @@ The view is changed without modifying the data. You can see the lines are shown 
 <hr>
 
 .pull-right[
-```{r view-follow}
+```{r view-follow, cache = TRUE}
 ggplot(iris, aes(Sepal.Length, Sepal.Width)) +
   geom_point() +
   labs(title = "{closest_state}") +
@@ -818,7 +855,7 @@ tribble(
 Which shadow was used in the following animations?
 
 .pull-left[
-```{r shadow-wake}
+```{r shadow-wake, cache = TRUE}
 ggplot(iris, aes(Petal.Length, Sepal.Length)) +
   geom_point(size = 2) +
   labs(title = "{closest_state}") +
@@ -839,7 +876,7 @@ The older tails of the points shrink in size, leaving a "wake" behind it.
 <hr>
 
 .pull-right[
-```{r shadow-mark}
+```{r shadow-mark, cache = TRUE}
 ggplot(airquality, aes(Day, Temp)) +
   geom_line(color = 'red', size = 1) +
   transition_time(Month) +
@@ -909,13 +946,13 @@ class: inverse, center, middle
 ### Load the data and set the theme
 
 .left-code[
-```{r gm_plot1, echo=T, eval=F}
+```{r gm-plot1, echo=T, eval=F}
 library(gapminder) #<<
 theme_set(theme_bw()) #<<
 ```
 ]
 .right-plot[
-```{r gm_output1, ref.label="gm_plot1", echo=FALSE, cache=TRUE, fig.height = 10}
+```{r gm-output1, ref.label="gm-plot1", echo=FALSE, cache=TRUE, fig.height = 10}
 ```
 ]
 
@@ -925,7 +962,7 @@ theme_set(theme_bw()) #<<
 ### Define the aesthetics
 
 .left-code[
-```{r gm_plot2, echo=T, eval=F}
+```{r gm-plot2, echo=T, eval=F}
 library(gapminder)
 theme_set(theme_bw())
 
@@ -935,7 +972,7 @@ ggplot(gapminder) + #<<
 ```
 ]
 .right-plot[
-```{r gm_output2, ref.label="gm_plot2", echo=FALSE, cache=TRUE, fig.height = 10}
+```{r gm-output2, ref.label="gm-plot2", echo=FALSE, cache=TRUE, fig.height = 10}
 ```
 ]
 
@@ -945,7 +982,7 @@ ggplot(gapminder) + #<<
 ### The plot is feeling a bit pointless...
 
 .left-code[
-```{r gm_plot3, echo=T, eval=F}
+```{r gm-plot3, echo=T, eval=F}
 library(gapminder)
 theme_set(theme_bw())
 
@@ -956,7 +993,7 @@ ggplot(gapminder) +
 ```
 ]
 .right-plot[
-```{r gm_output3, ref.label="gm_plot3", echo=FALSE, cache=TRUE, fig.height = 10}
+```{r gm-output3, ref.label="gm-plot3", echo=FALSE, cache=TRUE, fig.height = 10}
 ```
 ]
 
@@ -966,7 +1003,7 @@ ggplot(gapminder) +
 ### Transform the axis
 
 .left-code[
-```{r gm_plot4, echo=T, eval=F}
+```{r gm-plot4, echo=T, eval=F}
 library(gapminder)
 theme_set(theme_bw())
 
@@ -978,7 +1015,7 @@ ggplot(gapminder) +
 ```
 ]
 .right-plot[
-```{r gm_output4, ref.label="gm_plot4", echo=FALSE, cache=TRUE, fig.height = 10}
+```{r gm-output4, ref.label="gm-plot4", echo=FALSE, cache=TRUE, fig.height = 10}
 ```
 ]
 
@@ -988,7 +1025,7 @@ ggplot(gapminder) +
 ### Customise the colour and size of points
 
 .left-code[
-```{r gm_plot5, echo=T, eval=F}
+```{r gm-plot5, echo=T, eval=F}
 library(gapminder)
 theme_set(theme_bw())
 
@@ -1002,7 +1039,7 @@ ggplot(gapminder) +
 ```
 ]
 .right-plot[
-```{r gm_output5, ref.label="gm_plot5", echo=FALSE, cache=TRUE, fig.height = 10}
+```{r gm-output5, ref.label="gm-plot5", echo=FALSE, cache=TRUE, fig.height = 10}
 ```
 ]
 
@@ -1012,7 +1049,7 @@ ggplot(gapminder) +
 ### Add some labels
 
 .left-code[
-```{r gm_plot7, echo=T, eval=F}
+```{r gm-plot7, echo=T, eval=F}
 library(gapminder)
 theme_set(theme_bw())
 
@@ -1027,7 +1064,7 @@ ggplot(gapminder) +
 ```
 ]
 .right-plot[
-```{r gm_output7, ref.label="gm_plot7", echo=FALSE, cache=TRUE, fig.height = 10}
+```{r gm-output7, ref.label="gm-plot7", echo=FALSE, cache=TRUE, fig.height = 10}
 ```
 ]
 
@@ -1036,7 +1073,7 @@ ggplot(gapminder) +
 ## Making the gapminder animation
 ### Time to animate!
 
-```{r gm_plot1agian, echo=T, eval=F}
+```{r gm-plot1agian, echo=T, eval=F}
 library(gapminder)
 theme_set(theme_bw())
 
@@ -1072,7 +1109,7 @@ What are appropriate some appropriate animation features?
 ## Transition with time: animating over year
 
 .left-code[
-```{r gm_plot2_a, echo=T, eval=F}
+```{r gm-plot2_a, echo=T, eval=F}
 library(gapminder)
 theme_set(theme_bw())
 
@@ -1090,7 +1127,7 @@ ggplot(gapminder) +
 ]
 
 .right-plot[
-```{r gm_output2, ref.label="gm_plot2_a", echo=FALSE, cache=TRUE, fig.height = 10}
+```{r gm-output2, ref.label="gm-plot2_a", echo=FALSE, cache=TRUE, fig.height = 10}
 ```
 ]
 
@@ -1099,7 +1136,7 @@ ggplot(gapminder) +
 ## Changing the view: scaling the y-axis to the data
 
 .left-code[
-```{r gm_plot3a, echo=T, eval=F}
+```{r gm-plot3a, echo=T, eval=F}
 library(gapminder)
 theme_set(theme_bw())
 
@@ -1117,7 +1154,7 @@ ggplot(gapminder) +
 ```
 ]
 .right-plot[
-```{r gm_output3, ref.label="gm_plot3a", echo=FALSE, cache=TRUE, fig.height = 10}
+```{r gm-output3, ref.label="gm-plot3a", echo=FALSE, cache=TRUE, fig.height = 10}
 ```
 ]
 
@@ -1130,7 +1167,7 @@ Does this add value to the animation?
 ## Shadow the past: highlight the rate of change
 
 .left-code[
-```{r gm_plot4a, echo=T, eval=F}
+```{r gm-plot4a, echo=T, eval=F}
 library(gapminder)
 theme_set(theme_bw())
 
@@ -1148,7 +1185,7 @@ ggplot(gapminder) +
 ```
 ]
 .right-plot[
-```{r gm_output4a, ref.label="gm_plot4a", echo=FALSE, cache=TRUE, fig.height = 10}
+```{r gm-output4a, ref.label="gm-plot4a", echo=FALSE, cache=TRUE, fig.height = 10}
 ```
 ]
 
@@ -1158,7 +1195,7 @@ Can you see countries that move rapidly?
 
 ## Add your own flavour!
 
-```{r gm_plot5a, echo=T, eval=F}
+```{r gm-plot5a, echo=T, eval=F}
 library(gapminder)
 theme_set(theme_bw())
 
@@ -1271,18 +1308,18 @@ class: inverse, top
 
 .sticker-float[![gganimate](resources/gganimate.png)]
 
-.title[Thanks! `r fa("comments", fill = "white")`]
+.title[Thanks! `r icon_style(fontawesome$solid$comments, fill = "white")`]
 
 <br>
 
 .larger[
-`r fa("github", fill = "white")` Learn more on GitHub: [thomasp85/gganimate](https://github.com/thomasp85/gganimate)
+`r icon_style(fontawesome$brands$github, fill = "white")` Learn more on GitHub: [thomasp85/gganimate](https://github.com/thomasp85/gganimate)
 
-`r fa("wikipedia-w", fill = "white")` More examples on the wiki: [thomasp85/gganimate/wiki](https://github.com/thomasp85/gganimate/wiki)
+`r icon_style(fontawesome$brands$"wikipedia-w", fill = "white")` More examples on the wiki: [thomasp85/gganimate/wiki](https://github.com/thomasp85/gganimate/wiki)
 
-`r fa("desktop", fill = "white")` Review slides: [mitchelloharawild.com/wombat-gganimate](https://mitchelloharawild.com/wombat-gganimate)
+`r icon_style(fontawesome$solid$desktop, fill = "white")` Review slides: [mitchelloharawild.com/wombat-gganimate](https://mitchelloharawild.com/wombat-gganimate)
 
 <br>
 
-.footnote[This work is licensed as `r fa("creative-commons", fill="white")` BY-NC 4.0.]
+.footnote[This work is licensed as `r icon_style(fontawesome$brands$"creative-commons", fill = "white")` BY-NC 4.0.]
 ]

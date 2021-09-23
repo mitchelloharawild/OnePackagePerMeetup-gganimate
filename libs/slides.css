@@ -135,6 +135,13 @@ p, li {
   font-weight: 600;
 }
 
+.lighter {
+  color: #888888;
+}
+.inverse.lighter {
+  color: #bbbbbb;
+}
+
 /* Two-column layout */
 .left-column {
   color: #777;
@@ -159,6 +166,10 @@ p, li {
   float: right;
   width: 50%;
   margin-bottom:20px;
+}
+
+.full-height {
+  height: 100%;
 }
 
 .plot-right-absolute{
@@ -221,4 +232,125 @@ thead, tfoot, tr:nth-child(even) { background: #eee }
     top: 0 !important;
     left: 0 !important;
   }
+}
+
+
+.bg-blond {
+  background-color: #faf0caee !important;
+}
+
+.bg-yellow {
+  background-color: #f4d35eee !important;
+}
+
+.feature {
+  background-color: #faf0ca !important;
+  color: #0d3b66 !important;
+}
+
+.feature h1 {
+  color: #ee964b;
+  text-shadow: 1px 1px 2px #f4d35e;
+  font-size: 4em;
+  font-weight: 700;
+}
+
+.feature h2{
+  font-size: 2em;
+  font-weight: 700;
+}
+
+.topic-starter{
+  background-color: #faf0ca !important;
+  color: #135593 !important;
+  background-image: url("../resources/butterfly-banner.jpg");
+  background-position: top;
+}
+
+.topic-starter h1{
+  padding-top: 38%;
+  text-shadow: 1px 1px 2px #f4d35e;
+  font-size: 4em;
+  font-weight: 700;
+}
+
+.box-12 {
+  width: 100%;
+  border-radius: 25px;
+  padding: 5px 0px 5px 25px;
+  background-color: #ffffff99;
+}
+
+.box-12.opaque {
+  width: 100%;
+  border-radius: 25px;
+  padding: 5px 0px 5px 25px;
+  background-color: #ffffff;
+}
+
+.box-12 p{
+  margin: 10px 20px 0px 0px;
+}
+
+.left-side {
+  height: 100%;
+  width: 33%;
+  padding: 0;
+  margin: 1em 4em 1em 4em;
+}
+
+.left-side .pull-left {
+  float: left;
+  width: 33%;
+  height: 100%;
+  margin-bottom:20px;
+}
+
+.left-side .pull-right {
+  float: right;
+  width: 64%;
+  margin-bottom:20px;
+}
+
+.half-side {
+  height: 100%;
+  width: 50%;
+  padding: 0;
+  margin: 1em 4em 1em 4em;
+}
+
+.half-side .pull-left {
+  float: left;
+  padding: 1em;
+  width: 50%;
+  height: 100%;
+  margin-bottom:20px;
+}
+
+.half-side .pull-right {
+  float: right;
+  padding: 1em;
+  width: 50%;
+  height: 100%;
+  margin-bottom:20px;
+}
+
+.right-side {
+  height: 100%;
+  width: 33%;
+  padding: 0;
+  margin: 1em 4em 1em 4em;
+}
+
+.right-side .pull-left {
+  float: left;
+  width: 64%;
+  margin-bottom:20px;
+}
+
+.right-side .pull-right {
+  float: right;
+  width: 33%;
+  height: 100%;
+  margin-bottom:20px;
 }
