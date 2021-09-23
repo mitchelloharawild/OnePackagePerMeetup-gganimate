@@ -188,11 +188,14 @@ background-size: cover
 .pull-left.bg-blond[
 ## Who `r fontawesome$brands$"r-project"` you?
 
-Experience with R?
 
-Experience with tidyverse?
+### Time for some polls!
+
+Base R or tidy R?
+
 
 Experience with ggplot2?
+
 
 Experience with gganimate?
 ]
@@ -373,36 +376,34 @@ https://www.reddit.com/r/dataisbeautiful/top/?t=all
 ]
 ---
 
-## Why should I animate?
+## How can animation help tell a data story?
 
 <hr>
 
-### Allows simple graphics to show changes over time.
+--
+
+### 📊 Allows simple graphics to show changes over time.
+
+--
+
+### 🚶 You can show more detailed intermediate steps.
+
+--
+
+### 🧭 Guided exploration of data - great for talks.
 
 <br>
 
 --
 
-### You can show more detailed intermediate steps.
-
-<br>
-
---
-
-### Guided exploration of data - great for talks.
-
-<br>
-
---
-
-.animated.bounceIn[
-### Attention grabbing. 
-#### (Tired students? Zzz...)
+.center.animated.bounceIn[
+# ⚡ Attention grabbing! ⚡
+## (Tired students? Zzz...)
 ]
 
 ---
 
-## 🚧 Caution: it's easy for animation to make a good plot worse!
+## 🚧 Caution: Three symptoms of poor animation
 
 <hr>
 
@@ -424,104 +425,145 @@ Multiple simple animations can be easier to digest.
 
 Is animation needed? Does it provide additional value?
 
-
 ---
-class: inverse, center, middle
+class: feature
 
-.sticker-float[![gganimate](resources/gganimate.png)]
+# 🌠 Your turn!
 
-.title[Your turn]
+.box-12[
 
-# Think about why you want to animate?
+## What would you like to animate? 📊
 
----
+Did you bring an animation idea for your plot with you?
 
-## What is `gganimate`?
+1. Is a static, animated, or interactive plotting best for your data?
+1. Does this change based on your plot's audience and context?
+1. How does the animation help tell your data story?
 
-.pull-left[
-An extension to the grammar of graphics for animation.
-
-Specifically allows animations to be added to ggplot2 using a grammar of animation.
 ]
 
-.pull-right[
-```{r}
+---
+background-image: linear-gradient(to bottom, rgba(50, 50, 50, .8), rgba(50, 50, 50, .5)), url("resources/yong-chuan-tan-upQ4JyynV30-unsplash.jpg")
+background-size: cover
+
+.box-12.center.bg-blond[
+# 💃 Making plots move 🕺
+
+## Animating ggplot2's grammar of graphics
+
+## (An introduction to gganimate)
+]
+a
+---
+## The foundation - ggplot2
+<hr>
+
+![Allison Horst's ggplot2 illustration](resources/allison-ggplot2.png)
+
+.attribution[
+Illustration by Allison Horst: https://github.com/allisonhorst/stats-illustrations/
+]
+
+---
+## The foundation - ggplot2
+<hr>
+
+> *ggplot2 is a system for declaratively creating graphics, based on "The Grammar of Graphics"* -  [__ggplot2__](https://ggplot2.tidyverse.org/index.html)
+
+--
+
+Create the plot you want with:
+
+ * __Data__: input data should be formatted in a data frame, where each column is a variable, and each row is an observation
+ * __Mapping__: declaring a mapping of input data variables onto aesthetics
+ * __Geometries__: the graphical primitives, e.g. geom_line, geom_point
+
+--
+
+There's also __facets__, __statistics__, __coordinates__, and __themes__ - but this isn't a grammar of graphics workshop!
+
+---
+## The extension - gganimate
+<hr>
+
+.center[
+```{r, echo = FALSE}
 mp4_vid("resources/gganimate.mp4")
 ```
 ]
 
 ---
 
-## Brief history of `gganimate`
+## A brief history of `gganimate`
 
 .pull-left[
-.rounded-circle[![David Robinson](resources/david.jpeg)]
+.card[
+![David Robinson](resources/david.jpg)
+.container[
 
-Author: David Robinson.
+David Robinson.
 
-Primarily developed in 2016.
+Developed gganimate in 2016.
 
-Interface featured frame-by-frame animation building.
+Added the frame aesthetic to ggplot for frame-by-frame animation.
+]
+]
 ]
 
+--
 
 .pull-right[
-![Thomas Lin Pedersen](resources/thomas.jpeg)
+.card[
+![Thomas Lin Pedersen](resources/thomas.jpg)
+.container[
+Thomas Lin Pedersen.
 
-Author: Thomas Lin Pedersen.
+Rewrote gganimate in 2017-2018.
 
-Reimagined between 2017 and 2018.
+Uses a ggplot-like grammar with smooth tweening between states.
+]
+]
+]
 
-Re-built completely to support a grammar of animation with smooth transitions.
+
+---
+## The extension - gganimate
+<hr>
+
+![Allison Horst's gganimate illustration](resources/allison-gganimate.png)
+
+.attribution[
+Illustration by Allison Horst: https://github.com/allisonhorst/stats-illustrations/
 ]
 
 ---
-## The basis - ggplot2
-
+## The extension - gganimate
 <hr>
 
-<br>
+> *[gganimate] adds support for declaring animations using an API familiar to users of ggplot2* -  [__gganimate__](https://gganimate.com/index.html)
 
-> a system for declaratively creating graphics, based on "The Grammar of Graphics"
+Animate the plot you want with:
 
+ * __Transitions__: describes how data moves throughout the animation
+ 
+--
+ 
+ * __Views__: defines how the plot window (axis/scales) change
 
-Based on three simple concepts:
+--
 
- * __Data__: input data should be formated in a data frame, where each column is a variable, and each row is an observation
- * __Mapping__: declaring a mapping of input data variables onto aestetics
- * __geoms__: the graphical primitives, e.g. geom_line, geom_point
+ * __Shadows__: allows previously animated frames to persist
+ 
+--
+ 
+ * __Entrances/Exits__: animations used to add or remove geometries
+ 
+--
+
+ * __Easing__: at what rate should one frame animate into the next?
 
 ---
-
-## Basic workflow
-
-<hr>
-<br>
-<br>
---
-
-### Initialise a ggplot by passing in data and mapping
-
---
-
-### Add layers with graphical primitives (geoms)
-
-
---
-
-### Add formatting specifications
-
---
-
-### Add animation specifications
-<br>
-
---
-
-### Let's try some simple examples!
-
----
-## A simple example
+## Our first gganimation
 ### Using the economics dataset
 
 Let's start by passing the data to ggplot
@@ -537,7 +579,7 @@ ggplot(economics) #<<
 ]
 
 ---
-## A simple example
+## Our first gganimation
 ### Using the economics dataset
 The next step is to add the mapping
 
@@ -553,7 +595,7 @@ ggplot(economics) +
 ]
 
 ---
-## A simple example
+## Our first gganimation
 ### Using the economics dataset
 
 Add the line geometry to make a time series plot
@@ -571,7 +613,7 @@ ggplot(economics) +
 ]
 
 ---
-## A simple example
+## Our first gganimation
 ### Using the economics dataset
 Add a transition to reveal an animation!
 
@@ -601,40 +643,15 @@ How can it be improved?
 
 ---
 ## The datasaurus dozen
-Again, we first pass in the dataset to ggplot
 
-.left-code[
-```{r plot5, eval=FALSE, echo=TRUE}
-ggplot(datasaurus_dozen)#<<
-```
-]
-.right-plot[
-```{r output5, ref.label="plot5", echo=FALSE, cache=TRUE, fig.height = 10}
-```
-]
----
-## The datasaurus dozen
-For each dataset we have x and y values, in addition we can map dataset to color
+A datasaurus dozen (13) of plots with the same statistical features.
 
-.left-code[
-```{r plot6, eval=FALSE, echo=TRUE}
-ggplot(datasaurus_dozen) +
-  aes(x, y, color=dataset)#<<
-```
-]
-.right-plot[
-```{r output6, ref.label="plot6", echo=FALSE, cache=TRUE, fig.height = 10}
-```
-]
----
-## The datasaurus dozen
-We can use facets to split up by dataset, revealing the different distributions
 .left-code[
 ```{r plot8, eval=FALSE, echo=TRUE}
 ggplot(datasaurus_dozen) +
-  aes(x, y, color=dataset) +
-  geom_point() +#<<
-  facet_wrap(~dataset)#<<
+  aes(x, y) +
+  geom_point() +
+  facet_wrap(~dataset) #<<
 ```
 ]
 .right-plot[
@@ -642,8 +659,8 @@ ggplot(datasaurus_dozen) +
 ```
 ]
 ---
-## A not-so-simple example, the datasaurus dozen
-We can just as easily turn it into an animation, transitioning between dataset states! 
+## The datasaurus dozen
+Instead of faceting, we can animate between plot states.
 
 .left-code[
 ```{r plot9, eval=FALSE, echo=TRUE}
@@ -660,24 +677,28 @@ ggplot(datasaurus_dozen) +
 ```
 ]
 
+--
+.left-code[
+Is this a good use of animation?
+]
+
+--
+.left-code[
+How can it be improved?
+]
+
 
 ---
+background-image: linear-gradient(to bottom, rgba(50, 50, 50, .8), rgba(50, 50, 50, .5)), url("resources/ryan-wallace-azA1hLbjBBo-unsplash.jpg")
+background-size: cover
 
-class: inverse, middle
+.box-12.center.bg-blond[
+# 💃 Making plots move 🕺
 
-.sticker-float[![gganimate](resources/gganimate.png)]
+## The grammar of animation
 
-# The grammar of animation
-
-<hr>
-### Controlling plot movement with:
-
-
-- ### Transitions
-- ### Views
-- ### Shadows
-- ### Entrances/Exits
-- ### Easing
+(everything about transitions, views, shadows, entrances/exits, and easing)
+]
 
 ---
 
@@ -703,7 +724,7 @@ tribble(
 
 ---
 
-## Transitions
+## Transitions - quiz
 
 Which transition was used in the following animations?
 
@@ -792,7 +813,7 @@ tribble(
 
 ---
 
-## Views
+## Views - quiz
 
 Which view was used in the following animations?
 
@@ -850,7 +871,7 @@ tribble(
 
 ---
 
-## Shadows
+## Shadows - quiz
 
 Which shadow was used in the following animations?
 
@@ -858,7 +879,7 @@ Which shadow was used in the following animations?
 ```{r shadow-wake, cache = TRUE}
 ggplot(iris, aes(Petal.Length, Sepal.Length)) +
   geom_point(size = 2) +
-  labs(title = "{closest_state}") +
+  # labs(title = "{closest_state}") +
   transition_states(Species, transition_length = 4, state_length = 1) +
   shadow_wake(wake_length = 0.1)
 ```
@@ -915,9 +936,9 @@ tribble(
 
 ---
 
-## Animation controls
+## Tweening controls
 
-How data moves from one position to another. 
+How data moves between one state and another. 
 
 ```r
 p + ease_aes({aesthetic} = {ease})
@@ -929,26 +950,34 @@ p + ease_aes(x = "cubic")
 Source: https://easings.net/
 ]
 
+
 ---
-class: inverse, center, middle
+background-image: linear-gradient(to bottom, rgba(50, 50, 50, .8), rgba(50, 50, 50, .5)), url("resources/aron-visuals-BXOXnQ26B7o-unsplash.jpg")
+background-size: cover
 
-.sticker-float[![gganimate](resources/gganimate.png)]
+.box-12.center.bg-blond[
+# 💃 Making plots move 🕺
 
-.title[Your turn]
+## Reproducing the gapminder animation
+]
 
-# Making the gapminder animation
+<br>
+--
 
+.center[
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/jbkSRLYSojo?rel=0&amp;start=240" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+]
 
 ---
 
 ## Making the gapminder animation
-### Load the data and set the theme
+### Load the data and start plotting
 
 .left-code[
 ```{r gm-plot1, echo=T, eval=F}
 library(gapminder) #<<
-theme_set(theme_bw()) #<<
+gapminder %>% #<< 
+  ggplot() #<<
 ```
 ]
 .right-plot[
@@ -959,36 +988,15 @@ theme_set(theme_bw()) #<<
 ---
 
 ## Making the gapminder animation
-### Define the aesthetics
-
-.left-code[
-```{r gm-plot2, echo=T, eval=F}
-library(gapminder)
-theme_set(theme_bw())
-
-ggplot(gapminder) + #<<
-  aes(x = gdpPercap, y=lifeExp, #<<
-      size = pop, colour = country) #<<
-```
-]
-.right-plot[
-```{r gm-output2, ref.label="gm-plot2", echo=FALSE, cache=TRUE, fig.height = 10}
-```
-]
-
----
-
-## Making the gapminder animation
-### The plot is feeling a bit pointless...
+### Get to the point, add aesthetics and geoms.
 
 .left-code[
 ```{r gm-plot3, echo=T, eval=F}
 library(gapminder)
-theme_set(theme_bw())
-
-ggplot(gapminder) +
-  aes(x = gdpPercap, y=lifeExp,
-      size = pop, colour = country) +
+gapminder %>% 
+  ggplot() +
+  aes(x = gdpPercap, y=lifeExp,#<<
+      size = pop, colour = country) + #<<
   geom_point(show.legend = FALSE)  #<<
 ```
 ]
@@ -1005,11 +1013,10 @@ ggplot(gapminder) +
 .left-code[
 ```{r gm-plot4, echo=T, eval=F}
 library(gapminder)
-theme_set(theme_bw())
-
-ggplot(gapminder) +
+gapminder %>% 
+  ggplot() +
   aes(x = gdpPercap, y=lifeExp,
-      size = pop, colour = country) +
+      size = pop, colour = country) + 
   geom_point(show.legend = FALSE) +
   scale_x_log10() #<<
 ```
@@ -1022,20 +1029,20 @@ ggplot(gapminder) +
 ---
 
 ## Making the gapminder animation
-### Customise the colour and size of points
+### Customise the style, colour and size of points
 
 .left-code[
 ```{r gm-plot5, echo=T, eval=F}
 library(gapminder)
-theme_set(theme_bw())
-
-ggplot(gapminder) +
+gapminder %>% 
+  ggplot() +
   aes(x = gdpPercap, y=lifeExp,
-      size = pop, colour = country) +
+      size = pop, colour = country) + 
   geom_point(show.legend = FALSE) +
   scale_x_log10() +
   scale_color_viridis_d() + #<<
-  scale_size(range = c(2, 12)) #<<
+  scale_size(range = c(2, 12)) +#<<
+  theme_bw()#<<
 ```
 ]
 .right-plot[
@@ -1051,15 +1058,15 @@ ggplot(gapminder) +
 .left-code[
 ```{r gm-plot7, echo=T, eval=F}
 library(gapminder)
-theme_set(theme_bw())
-
-ggplot(gapminder) +
+gapminder %>% 
+  ggplot() +
   aes(x = gdpPercap, y=lifeExp,
-      size = pop, colour = country) +
+      size = pop, colour = country) + 
   geom_point(show.legend = FALSE) +
   scale_x_log10() +
   scale_color_viridis_d() +
   scale_size(range = c(2, 12)) +
+  theme_bw() +
   labs(x = "GDP per capita", y = "Life expectancy") #<<
 ```
 ]
@@ -1075,22 +1082,18 @@ ggplot(gapminder) +
 
 ```{r gm-plot1agian, echo=T, eval=F}
 library(gapminder)
-theme_set(theme_bw())
-
-ggplot(gapminder) + 
-  aes(x = gdpPercap, y=lifeExp, 
-      size = pop, colour = country)) +
+gapminder %>% 
+  ggplot() +
+  aes(x = gdpPercap, y=lifeExp,
+      size = pop, colour = country) + 
   geom_point(show.legend = FALSE) +
   scale_x_log10() +
   scale_color_viridis_d() +
   scale_size(range = c(2, 12)) +
+  theme_bw() +
   labs(x = "GDP per capita", y = "Life expectancy") +
   ??? #<<
 ```
-
---
-
-What are appropriate some appropriate animation features?
 
 --
 
@@ -1111,15 +1114,15 @@ What are appropriate some appropriate animation features?
 .left-code[
 ```{r gm-plot2_a, echo=T, eval=F}
 library(gapminder)
-theme_set(theme_bw())
-
-ggplot(gapminder) + 
-  aes(x = gdpPercap, y=lifeExp, 
-      size = pop, colour = country) +
+gapminder %>% 
+  ggplot() +
+  aes(x = gdpPercap, y=lifeExp,
+      size = pop, colour = country) + 
   geom_point(show.legend = FALSE) +
   scale_x_log10() +
   scale_color_viridis_d() +
   scale_size(range = c(2, 12)) +
+  theme_bw() +
   labs(x = "GDP per capita", y = "Life expectancy") +
   transition_time(year) + #<<
   labs(title = "Year: {frame_time}") #<<
@@ -1138,15 +1141,15 @@ ggplot(gapminder) +
 .left-code[
 ```{r gm-plot3a, echo=T, eval=F}
 library(gapminder)
-theme_set(theme_bw())
-
-ggplot(gapminder) + 
-  aes(x = gdpPercap, y=lifeExp, 
-      size = pop, colour = country) +
+gapminder %>% 
+  ggplot() +
+  aes(x = gdpPercap, y=lifeExp,
+      size = pop, colour = country) + 
   geom_point(show.legend = FALSE) +
   scale_x_log10() +
   scale_color_viridis_d() +
   scale_size(range = c(2, 12)) +
+  theme_bw() +
   labs(x = "GDP per capita", y = "Life expectancy") +
   transition_time(year) +
   labs(title = "Year: {frame_time}") +
@@ -1169,15 +1172,15 @@ Does this add value to the animation?
 .left-code[
 ```{r gm-plot4a, echo=T, eval=F}
 library(gapminder)
-theme_set(theme_bw())
-
-ggplot(gapminder) + 
-  aes(x = gdpPercap, y=lifeExp, 
-      size = pop, colour = country) +
+gapminder %>% 
+  ggplot() +
+  aes(x = gdpPercap, y=lifeExp,
+      size = pop, colour = country) + 
   geom_point(show.legend = FALSE) +
   scale_x_log10() +
   scale_color_viridis_d() +
   scale_size(range = c(2, 12)) +
+  theme_bw() +
   labs(x = "GDP per capita", y = "Life expectancy") +
   transition_time(year) +
   labs(title = "Year: {frame_time}") +
@@ -1197,15 +1200,15 @@ Can you see countries that move rapidly?
 
 ```{r gm-plot5a, echo=T, eval=F}
 library(gapminder)
-theme_set(theme_bw())
-
-ggplot(gapminder) + 
-  aes(x = gdpPercap, y=lifeExp, 
-      size = pop, colour = country) +
+gapminder %>% 
+  ggplot() +
+  aes(x = gdpPercap, y=lifeExp,
+      size = pop, colour = country) + 
   geom_point(show.legend = FALSE) +
   scale_x_log10() +
   scale_color_viridis_d() +
-  scale_size(range = c(2, 12)) +
+  scale_size(range = c(2, 12)) + 
+  theme_bw() +
   labs(x = "GDP per capita", y = "Life expectancy") +
   transition_time(year) +
   labs(title = "Year: {frame_time}")
@@ -1221,15 +1224,16 @@ ggplot(gapminder) +
 
 ## Exporting animations
 
+`anim_save()` is the gganimate analogue to ggplot2's `ggsave()`.
+
 ```{r export, echo=T, eval=F}
 anim_save(
-  filename = "./images/MyAnim.gif", animation = MyAnim,
-  start_pause = 15, width = 480, height = 480, res = 150)
+  filename = "./images/my_animation.gif", animation = my_animation,
+  start_pause = 15, width = 480, height = 480, res = 150
+)
 ```
 
-```{r, out.width='40%', out.height='40%'}
-knitr::include_graphics("./resources/DIS_mt.gif")
-```
+The output type is partly determined by the animation renderer.
 
 ---
 
@@ -1251,19 +1255,30 @@ tribble(
   kableExtra::kable_styling(font_size = 26)
 ```
 
+---
+class: feature
+
+# 🌠 Your turn!
+
+.box-12[
+
+## Make your own animation 📊
+
+Did you bring a plot with you that you'd like to animate?
+
+1. Think about how animation can most appropriately be used.
+1. Add a transition and/or view to your plot.
+1. Try changing the easing of the animation with `ease_aes()`.
+
+Ask questions and discuss your animation decisions! 🙋
+
+(if you didn't bring a plot to animate, try plotting `palmerpenguins::penguins` or extend the animations in the earlier `gapminder` demo.)
+
+]
 
 ---
-class: inverse, center, middle
 
-.sticker-float[![gganimate](resources/gganimate.png)]
-
-.title[Your turn]
-
-# Make your own animation
-
----
-
-## Simple alternative: Plotly
+## Some alternatives: Plotly
 
 <hr>
 
@@ -1289,7 +1304,7 @@ More complicated alternative: use plotly directly (or basic libraries like D3.js
 ---
 class: center
 
-## Other animation libraries to check out
+## Other interactive graphics libraries to check out
 
 <br>
 
@@ -1301,7 +1316,7 @@ class: center
 
 <br>
 
-This is not exhaustive - there are a lot of animation libraries!
+This is not exhaustive - there are a lot of suitable graphics libraries!
 ---
 
 class: inverse, top
@@ -1310,14 +1325,12 @@ class: inverse, top
 
 .title[Thanks! `r icon_style(fontawesome$solid$comments, fill = "white")`]
 
-<br>
-
 .larger[
 `r icon_style(fontawesome$brands$github, fill = "white")` Learn more on GitHub: [thomasp85/gganimate](https://github.com/thomasp85/gganimate)
 
 `r icon_style(fontawesome$brands$"wikipedia-w", fill = "white")` More examples on the wiki: [thomasp85/gganimate/wiki](https://github.com/thomasp85/gganimate/wiki)
 
-`r icon_style(fontawesome$solid$desktop, fill = "white")` Review slides: [mitchelloharawild.com/wombat-gganimate](https://mitchelloharawild.com/wombat-gganimate)
+`r icon_style(fontawesome$solid$desktop, fill = "white")` Review slides: [slides.mitchelloharawild.com/OnePackagePerMeetup-gganimate](https://slides.mitchelloharawild.com/OnePackagePerMeetup-gganimate)
 
 <br>
 

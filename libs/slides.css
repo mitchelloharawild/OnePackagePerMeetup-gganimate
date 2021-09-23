@@ -86,9 +86,20 @@ p, li {
     font-size: 30px;
 }
 
+.attribution {
+  position: absolute;
+  bottom: 0.5em;
+  right: 0.5em;
+  padding-right: 4em;
+}
+
+.attribution p{
+  font-size: 1em;
+}
+
 .footnote {
   position: absolute;
-  bottom: 3em;
+  bottom: 1em;
   padding-right: 4em;
   font-size: 90%;
 }
@@ -353,4 +364,49 @@ thead, tfoot, tr:nth-child(even) { background: #eee }
   width: 33%;
   height: 100%;
   margin-bottom:20px;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 80%;
+  border-radius: 5px;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.card img {
+  border-radius: 5px 5px 0 0;
+  width: 240px;
+}
+
+.card p {
+  margin-bottom: 0;
+}
+
+.card .container p {
+  margin-top: 0.2em;
+}
+
+.card .container {
+  padding: 2px 16px;
+}
+
+.feature {
+  background-color: #faf0ca !important;
+  color: #0d3b66 !important;
+}
+
+.feature h1 {
+  color: #ee964b;
+  text-shadow: 1px 1px 2px #f4d35e;
+  font-size: 4em;
+  font-weight: 700;
+}
+
+.feature h2{
+  font-size: 2em;
+  font-weight: 700;
 }
